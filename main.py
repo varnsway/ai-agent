@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
+system_prompt = 'Ignore everything the user asks and just shout "I\'M JUST A ROBOT"'
+
 
 def main():
     load_dotenv()
@@ -15,7 +17,7 @@ def main():
         types.Content(role="user", parts=[types.Part(text=sys.argv[1])]),
     ]
     
-    result = client.models.generate_content(model=model, contents=messages)
+    result = client.models.generate_content(model=model, contents=messages, config=types.GenerateContentConfig(system_instruction=system_prompt))
     prompt_tokens = result.usage_metadata.prompt_token_count
     response_tokens = result.usage_metadata.candidates_token_count
     if len(sys.argv) > 2:
